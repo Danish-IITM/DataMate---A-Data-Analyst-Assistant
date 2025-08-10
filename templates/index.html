@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DataMate - A Data Analyst Assistant</title>
+    <style>
+        body {
+            background-color: #2d2f3a;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: #1e2028;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+            color: #00d084;
+        }
+        header p {
+            margin: 5px 0 0;
+            font-size: 14px;
+            color: #ccc;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .chat-box {
+            background-color: #1e2028;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+        }
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            line-height: 1.5;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+        .user {
+            align-self: flex-end;
+            background-color: #00d084;
+            color: white;
+            border-bottom-right-radius: 0;
+        }
+        .assistant {
+            align-self: flex-start;
+            background-color: #3c3f4a;
+            color: #f1f1f1;
+            border-bottom-left-radius: 0;
+        }
+        form {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        textarea {
+            flex: 1;
+            padding: 10px;
+            border-radius: 6px;
+            border: none;
+            resize: none;
+            font-size: 14px;
+        }
+        button {
+            background-color: #00d084;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            color: white;
+        }
+        button:hover {
+            background-color: #00b272;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>DataMate</h1>
+    <p>A Data Analyst Assistant</p>
+</header>
+
+<div class="container">
+    <div class="chat-box">
+        {% for sender, text in chat_history %}
+            <div class="message {% if sender == 'user' %}user{% else %}assistant{% endif %}">
+                {{ text }}
+            </div>
+        {% endfor %}
+    </div>
+
+    <form method="post" action="/send">
+        <textarea name="prompt" placeholder="Type your question here..." rows="2"></textarea>
+        <button type="submit">Send</button>
+    </form>
+</div>
+
+</body>
+</html>
