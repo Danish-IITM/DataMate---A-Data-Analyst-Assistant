@@ -97,19 +97,51 @@
 </header>
 
 <div class="container">
-    <div class="chat-box">
-        {% for sender, text in chat_history %}
-            <div class="message {% if sender == 'user' %}user{% else %}assistant{% endif %}">
-                {{ text }}
-            </div>
-        {% endfor %}
-    </div>
+    <div class="chat-box" id="chat-box"></div>
 
-    <form method="post" action="/send">
-        <textarea name="prompt" placeholder="Type your question here..." rows="2"></textarea>
+    <form id="chat-form">
+        <textarea id="prompt" placeholder="Type your question here..." rows="2"></textarea>
         <button type="submit">Send</button>
     </form>
 </div>
+
+<script>
+    const chatBox = document.getElementById("chat-box");
+    const form = document.getElementById("chat-form");
+    const promptInput = document.getElementById("prompt");
+
+
+    function addMessage(sender, text) {
+        const msg = document.createElement("div");
+        msg.classList.add("message", sender);
+        msg.textContent = text;
+        chatBox.appendChild(msg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const prompt = promptInput.value.trim();
+        if (!prompt) return;
+
+        // Add user message
+        addMessage("user", prompt);
+        promptInput.value = "";
+
+        // Send to backend
+        try {
+            const res = await fetch("/send", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams({ prompt })
+            });
+            const data = await res.json();
+            addMessage("assistant", data.response);
+        } catch (err) {
+            addMessage("assistant", "Error: Unable to get response.");
+        }
+    });
+</script>
 
 </body>
 </html>
